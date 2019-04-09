@@ -13,36 +13,27 @@ public class TinkoffTariffPageTest extends BaseRunner {
 
     @Test
     public void testEmptyFieldsTestCase() {
-        driver.navigate().to(baseUrl);
+        tariff.open();
 
-        driver.findElement(By.xpath("//*[@id=\"form-application\"]/div[2]/div/div/form/div[1]/div/div[1]/div[1]/label/div[1]/input")).click();
-        driver.findElement(By.xpath("//*[@id=\"form-application\"]/div[2]/div/div/form/div[2]/div/div[1]/div/div[1]/label/div[1]/input[2]")).click();
-        driver.findElement(By.xpath("//*[@id=\"form-application\"]/div[2]/div/div/form/div[2]/div/div[2]/div/div/div[1]/label/div[1]/input")).click();
+        tariff.clickName();
+        tariff.clickPhone();
+        tariff.clickEmail();
 
-        assertEquals("Укажите ваше ФИО", driver.findElement(By.xpath("(.//*[normalize-space(text()) and normalize-space(.)='Фамилия, имя и отчество'])[1]/following::div[3]")).getText());
-        assertEquals("Необходимо указать номер телефона", driver.findElement(By.xpath("(.//*[normalize-space(text()) and normalize-space(.)='Контактный телефон'])[1]/following::div[2]")).getText());
+        assertEquals("Укажите ваше ФИО", tariff.getNameError());
+        assertEquals("Необходимо указать номер телефона", tariff.getPhoneError());
     }
 
     @Test
     public void testInvalidValuesTestCase() {
         driver.navigate().to(baseUrl);
 
-        driver.findElement(By.name("fio")).click();
-        driver.findElement(By.name("fio")).clear();
-        driver.findElement(By.name("fio")).sendKeys("нкгнукункг");
+        tariff.fillName("нкгнукункг");
+        tariff.fillPhone("+7(345) 345-");
+        tariff.fillEmail("шгншгншгннг");
 
-        driver.findElement(By.name("phone_mobile")).click();
-        driver.findElement(By.name("phone_mobile")).clear();
-        driver.findElement(By.name("phone_mobile")).sendKeys("+7(345) 345-");
-
-        driver.findElement(By.name("email")).click();
-        driver.findElement(By.name("email")).clear();
-        driver.findElement(By.name("email")).sendKeys("шгншгншгннг");
-        driver.findElement(By.name("email")).submit();
-
-        assertEquals("Недостаточно информации. Введите фамилию, имя и отчество через пробел (Например: Иванов Иван Алексеевич)", driver.findElement(By.xpath("(.//*[normalize-space(text()) and normalize-space(.)='Фамилия, имя и отчество'])[1]/following::div[3]")).getText());
-        assertEquals("Номер телефона должен состоять из 10 цифр, начиная с кода оператора", driver.findElement(By.xpath("(.//*[normalize-space(text()) and normalize-space(.)='Контактный телефон'])[1]/following::div[2]")).getText());
-        assertEquals("Введите корректный адрес эл. почты", driver.findElement(By.xpath("(.//*[normalize-space(text()) and normalize-space(.)='Электронная почта'])[1]/following::div[3]")).getText());
+        assertEquals("Недостаточно информации. Введите фамилию, имя и отчество через пробел (Например: Иванов Иван Алексеевич)", tariff.getNameError());
+        assertEquals("Номер телефона должен состоять из 10 цифр, начиная с кода оператора", tariff.getPhoneError());
+        assertEquals("Введите корректный адрес эл. почты", tariff.getEmailError());
     }
 
     @Test
@@ -136,6 +127,6 @@ public class TinkoffTariffPageTest extends BaseRunner {
 
         wait.until(ExpectedConditions.presenceOfElementLocated(By.xpath("//*[text()[contains(.,'Заказать доставку')]]")));
 
-        assertTrue(driver.findElement(By.xpath("//*[text()[contains(.,'Заказать доставку')]]")).isDisplayed());
+        assertFalse(driver.findElement(By.xpath("//*[@id=\"form\"]/div/div/div/div/div[2]/div/div/div[5]/div/button/span/span/span/span")).isDisplayed());
     }
 }
